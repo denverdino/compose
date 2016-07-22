@@ -1,4 +1,5 @@
-FROM debian:wheezy
+FROM registry.aliyuncs.com/acs/debian:wheezy
+COPY pip.conf /root/.pip/pip.conf
 
 RUN set -ex; \
     apt-get update -qq; \
@@ -22,7 +23,7 @@ RUN curl https://get.docker.com/builds/Linux/x86_64/docker-1.8.3 \
 
 # Build Python 2.7.9 from source
 RUN set -ex; \
-    curl -L https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz | tar -xz; \
+    curl -L http://mirrors.sohu.com/python/2.7.9/Python-2.7.9.tgz | tar -xz; \
     cd Python-2.7.9; \
     ./configure --enable-shared; \
     make; \
@@ -32,7 +33,7 @@ RUN set -ex; \
 
 # Build python 3.4 from source
 RUN set -ex; \
-    curl -L https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tgz | tar -xz; \
+    curl -L http://mirrors.sohu.com/python/3.4.3/Python-3.4.3.tgz | tar -xz; \
     cd Python-3.4.3; \
     ./configure --enable-shared; \
     make; \
@@ -43,17 +44,18 @@ RUN set -ex; \
 # Make libpython findable
 ENV LD_LIBRARY_PATH /usr/local/lib
 
-# Install setuptools
-RUN set -ex; \
-    curl -L https://bootstrap.pypa.io/ez_setup.py | python
+# Install 
+RUN set -ex; curl -L https://bootstrap.pypa.io/get-pip.py | python
+#RUN set -ex; \
+#    curl -L https://bootstrap.pypa.io/ez_setup.py | python
 
 # Install pip
-RUN set -ex; \
-    curl -L https://pypi.python.org/packages/source/p/pip/pip-8.1.1.tar.gz | tar -xz; \
-    cd pip-8.1.1; \
-    python setup.py install; \
-    cd ..; \
-    rm -rf pip-8.1.1
+#RUN set -ex; \
+#    curl -L https://pypi.python.org/packages/source/p/pip/pip-8.1.1.tar.gz | tar -xz; \
+#    cd pip-8.1.1; \
+#    python setup.py install; \
+#    cd ..; \
+#    rm -rf pip-8.1.1
 
 # Python3 requires a valid locale
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
